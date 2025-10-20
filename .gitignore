@@ -4,5 +4,6 @@
 virtualenv/
 *.parquet
 data/raw/**
+data/processed/**
 *.pkl
 *.json

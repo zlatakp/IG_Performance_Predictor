@@ -1,12 +1,11 @@
 from pathlib import Path
 import pandas as pd
 from traceback import print_exc
+from .columns import TARGETS, FEATURES
 
-DATA_PATH_INTERIM = Path(Path(__file__).resolve().parents[2]/'data'/'interim')
-DATA_PATH_PROCESSED = Path(Path(__file__).resolve().parents[2]/'data'/'processed')
+DATA_PATH_INTERIM = Path(Path(__file__).resolve().parents[3]/'data'/'interim')
+DATA_PATH_PROCESSED = Path(Path(__file__).resolve().parents[3]/'data'/'processed')
 
-FEATURES = ['Desc length', 'Duration (sec)', 'Post type', 'Day of Week', 'Hour'] #'Permalink'
-TARGETS = ['Views', 'Likes', 'Shares', 'Comments', 'Saves', 'Reach', 'Follows']
 
 def build_features():
     try:

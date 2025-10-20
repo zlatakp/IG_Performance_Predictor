@@ -1,15 +1,14 @@
 from pathlib import Path
-import joblib, json, pandas as pd
+import json, pandas as pd
 from sklearn.model_selection import KFold, RandomizedSearchCV
 from sklearn.linear_model import Ridge
 from sklearn.pipeline import Pipeline
 from scipy.stats import loguniform
-import sys
-sys.path.insert(0, '../features')
-from transformers import preprocess
+from features.transformers import preprocess
+from features.columns import TARGETS
+import pickle
 
-DATA_PATH_PROCESSED = Path(Path(__file__).resolve().parents[2]/'data'/'processed')
-TARGETS = ['Views', 'Likes', 'Shares', 'Comments', 'Saves', 'Reach', 'Follows']
+DATA_PATH_PROCESSED = Path(Path(__file__).resolve().parents[3]/'data'/'processed')
 ART_PATH = Path("artifacts")
 MET_PATH = Path("metrics")
 
@@ -42,11 +41,18 @@ def tune():
     ART_PATH.mkdir(parents=True, exist_ok=True)
     MET_PATH.mkdir(parents=True, exist_ok=True)
 
-    joblib.dump(search.best_estimator_, ART_PATH/"model_pipeline_best.pkl")
-    (MET_PATH/"cv_results.json").write_text(json.dumps({
-        "best_params": search.best_params_,
-        "best_rmse": -float(search.best_score_)
-    }, indent = 2))
+    with open(ART_PATH/"model_pipeline_best.pkl", "wb") as f:
+        pickle.dump(search.best_estimator_, f)
+
+    with open(MET_PATH/"cv_results.json", "w") as f:
+        f.write(json.dumps({
+            "best_params": search.best_params_,
+            "best_rmse": -float(search.best_score_)
+        }, indent = 2))
+
+    with open(ART_PATH/"model_pipeline_best.pkl", "rb") as f:
+        best_pipe = pickle.load(f)
+
 
 if __name__ == '__main__':
     tune()
